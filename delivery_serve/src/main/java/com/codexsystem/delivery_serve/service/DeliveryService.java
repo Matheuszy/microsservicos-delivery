@@ -1,5 +1,7 @@
 package com.codexsystem.delivery_serve.service;
 
+import com.codexsystem.delivery_serve.dto.DeliveryEvent;
+import com.codexsystem.delivery_serve.dto.EntregaDto;
 import com.codexsystem.delivery_serve.model.Entrega;
 import com.codexsystem.delivery_serve.repository.EntregaRepository;
 import jakarta.transaction.Transactional;
@@ -16,12 +18,22 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Entrega saveDelivery(Entrega delivery) {
+    public Entrega saveDelivery(EntregaDto delivery) {
       if (delivery == null) {
         throw new IllegalArgumentException("Delivery cannot be null");
       }
+        Entrega newDelivery = new Entrega(
+                delivery.codigoPedido(),
+                delivery.pedido(),
+                delivery.valor(),
+                delivery.tipoProduto(),
+                delivery.enderecoDestino(),
+                delivery.transporte()
+        );
 
-      return deliveryRepository.save(delivery);
+       deliveryRepository.save(newDelivery);
+
+       return  newDelivery;
     }
 
     public List<Entrega> getAllDeliveries() {
