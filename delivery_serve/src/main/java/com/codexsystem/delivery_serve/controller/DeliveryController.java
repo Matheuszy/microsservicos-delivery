@@ -1,5 +1,7 @@
 package com.codexsystem.delivery_serve.controller;
 
+import com.codexsystem.delivery_serve.dto.DeliveryEvent;
+import com.codexsystem.delivery_serve.dto.EntregaDto;
 import com.codexsystem.delivery_serve.model.Entrega;
 import com.codexsystem.delivery_serve.service.DeliveryService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -13,7 +15,7 @@ import java.util.List;
 public class DeliveryController {
 
     // routing key for the queue where the delivery messages will be sent
-    @Value("${broker.queue.processamento.name")
+    @Value("${broker.queue.processamento.name}")
     private String queueName;
     private final RabbitTemplate rabbitTemplate;
     private final DeliveryService service;
@@ -24,10 +26,18 @@ public class DeliveryController {
     }
 
     @PostMapping("/save")
-    public String save(@RequestBody Entrega delivery) {
+    public String save(@RequestBody EntregaDto delivery) {
       Entrega newEntrega = service.saveDelivery(delivery);
-      rabbitTemplate.convertAndSend(queueName, newEntrega.getPedido());
-      return "Delivery saved successfully" + newEntrega.getId();
+        DeliveryEvent deliveryEvent = new DeliveryEvent(
+                newEntrega.getCodigoPedido(),
+                newEntrega.getPedido(),
+                newEntrega.getEnderecoDestino(),
+                newEntrega.getTransporte()
+        );
+        System.out.println("Codigo da Entrega: " + newEntrega.getCodigoPedido());
+        System.out.println("Codigo do evento: " + deliveryEvent.codigoPedido());
+      rabbitTemplate.convertAndSend(queueName, deliveryEvent);
+      return "Delivery saved successfully" + newEntrega.getPedido();
     }
 
     @GetMapping
