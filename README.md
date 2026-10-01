@@ -1,49 +1,51 @@
-# 🚚 Java Microservices — Delivery & Tracking
+# 🚚 Microsservices Java — Event-Driven Architecture
 
-Projeto desenvolvido para estudo prático de **arquitetura de microsserviços**, **comunicação assíncrona** e **mensageria com RabbitMQ**, utilizando Java e Spring Boot.
+Projeto desenvolvido para estudo prático de **Microsserviços com Java e Spring Boot**, utilizando comunicação assíncrona através do **RabbitMQ**.
 
-O projeto é composto por dois microsserviços independentes:
-
-* **Delivery Service** — responsável pelo cadastro e gerenciamento das entregas.
-* **Tracking Service** — responsável pelo recebimento dos eventos e gerenciamento do rastreamento.
-
-A comunicação entre os serviços é feita de forma **assíncrona através do RabbitMQ**.
+O sistema simula um fluxo de entrega em que a criação de uma entrega dispara eventos para outros microsserviços, responsáveis por atualizar o rastreamento e enviar uma notificação por e-mail.
 
 ---
 
 ## 🏗️ Arquitetura
 
 ```text
-                    HTTP / REST
-                        │
-                        ▼
-              ┌───────────────────┐
-              │  Delivery Service │
-              │     Spring Boot   │
-              └─────────┬─────────┘
-                        │
-                        │ DeliveryEvent
-                        ▼
-                 ┌──────────────┐
-                 │   RabbitMQ   │
-                 │    Queue     │
-                 └───────┬──────┘
-                         │
-                         │ DeliveryEvent
-                         ▼
-              ┌───────────────────┐
-              │  Tracking Service │
-              │     Spring Boot   │
-              └───────────────────┘
+                         REST
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │ Delivery Service │
+                 │     :8081        │
+                 └────────┬────────┘
+                          │
+                          │ DeliveryCreatedEvent
+                          ▼
+                    ┌─────────────┐
+                    │  RabbitMQ   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                 ┌─────────────────┐
+                 │ Tracking Service│
+                 │     :8082       │
+                 └────────┬────────┘
+                          │
+                          │ Email/Tracking Event
+                          ▼
+                    ┌─────────────┐
+                    │  RabbitMQ   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                 ┌─────────────────┐
+                 │  Email Service  │
+                 │     :8083       │
+                 └────────┬────────┘
+                          │
+                          ▼
+                    Gmail SMTP
 ```
 
-O `Delivery Service` não chama diretamente o `Tracking Service`.
-
-Em vez disso, ele publica um evento no RabbitMQ. O `Tracking Service` consome esse evento quando estiver disponível.
-
-Isso cria um **desacoplamento temporal** entre os serviços.
-
-Por exemplo, se o Tracking Service estiver temporariamente desligado, as mensagens podem permanecer na fila e serem processadas quando o consumidor voltar a ficar disponível.
+Cada microsserviço possui sua própria responsabilidade e seu próprio estado.
 
 ---
 
@@ -51,258 +53,451 @@ Por exemplo, se o Tracking Service estiver temporariamente desligado, as mensage
 
 ### Delivery Service
 
-Responsável por:
+Responsável pelo gerenciamento das entregas.
 
-* Criar entregas.
-* Persistir os dados das entregas.
-* Disponibilizar consultas das entregas.
-* Publicar eventos de criação de entrega no RabbitMQ.
+Principais responsabilidades:
 
-Exemplo de informações de uma entrega:
+* Criar entregas
+* Persistir os dados da entrega
+* Gerenciar informações do pedido
+* Publicar eventos no RabbitMQ após a criação de uma entrega
+
+**Porta:** `8081`
+
+---
+
+### Tracking Service
+
+Responsável pelo acompanhamento da entrega.
+
+Principais responsabilidades:
+
+* Consumir eventos enviados pelo Delivery Service
+* Criar o registro de tracking
+* Manter seu próprio estado da entrega
+* Atualizar o status para `IN_TRANSIT`
+* Publicar um evento para o Email Service
+
+**Porta:** `8082`
+
+---
+
+### Email Service
+
+Responsável pelo envio das notificações por e-mail.
+
+Principais responsabilidades:
+
+* Consumir eventos do RabbitMQ
+* Processar os dados da notificação
+* Montar a mensagem
+* Enviar o e-mail através do Gmail SMTP
+
+**Porta:** `8083`
+
+O Email Service não precisa expor endpoints REST para esse fluxo, pois seu processamento é orientado a eventos.
+
+---
+
+# 🔄 Fluxo da aplicação
+
+O fluxo completo funciona da seguinte maneira:
+
+### 1. Criação da entrega
+
+O cliente envia uma requisição REST para o Delivery Service.
 
 ```text
-codigoPedido
-pedido
-valor
-tipoProduto
-enderecoDestino
-transporte
+Client
+  │
+  │ POST /entregas
+  ▼
+Delivery Service
+```
+
+A entrega é persistida no banco de dados.
+
+---
+
+### 2. Publicação do evento
+
+Após a criação da entrega, o Delivery Service publica um evento:
+
+```text
+DeliveryCreatedEvent
+```
+
+Exemplo conceitual:
+
+```json
+{
+  "codigoPedido": 123,
+  "pedido": "Pedido #123",
+  "email": "cliente@gmail.com",
+  "enderecoDestino": "São Paulo",
+  "transporte": "MOTOCICLETA"
+}
+```
+
+Esse evento é enviado para o RabbitMQ.
+
+---
+
+### 3. Tracking recebe o evento
+
+O Tracking Service possui um consumer que escuta a fila de processamento.
+
+```text
+RabbitMQ
+    │
+    ▼
+TrackingConsumer
+```
+
+Ao receber o evento, o serviço cria seu próprio registro de tracking.
+
+Por exemplo:
+
+```text
+codigoPedido: 123
+status: IN_TRANSIT
+```
+
+O Tracking Service **não consulta o banco de dados do Delivery Service**.
+
+Cada microsserviço é responsável pelo seu próprio estado.
+
+---
+
+### 4. Tracking publica um novo evento
+
+Depois de processar a entrega, o Tracking Service publica um evento destinado ao Email Service.
+
+Conceitualmente:
+
+```text
+Tracking Service
+       │
+       │ DeliveryTrackingEvent
+       ▼
+    RabbitMQ
+```
+
+---
+
+### 5. Email Service recebe o evento
+
+O Email Service possui um `EmailConsumer`:
+
+```text
+RabbitMQ
+    │
+    ▼
+EmailConsumer
+    │
+    ▼
+EmailService
+```
+
+O consumer recebe os dados e delega o envio para o serviço responsável pela lógica de e-mail.
+
+---
+
+### 6. Envio do e-mail
+
+O `EmailService` utiliza:
+
+```text
+JavaMailSender
+```
+
+para enviar a mensagem através do SMTP do Gmail.
+
+Exemplo de mensagem:
+
+```text
+Olá!
+
+Seu pedido está em trânsito.
+
+Em breve ele chegará ao endereço informado.
+
+Atenciosamente,
+Codex System
+```
+
+---
+
+# 📨 Comunicação assíncrona
+
+O RabbitMQ é utilizado para desacoplar os microsserviços.
+
+Em vez de:
+
+```text
+Delivery → HTTP → Tracking → HTTP → Email
+```
+
+utilizamos:
+
+```text
+Delivery
+    │
+    ▼
+RabbitMQ
+    │
+    ▼
+Tracking
+    │
+    ▼
+RabbitMQ
+    │
+    ▼
+Email
+```
+
+Isso permite que os serviços se comuniquem através de eventos sem que um serviço precise chamar diretamente o outro.
+
+---
+
+# 🗄️ Banco de dados
+
+Cada microsserviço possui seu próprio banco.
+
+```text
+Delivery Service
+      │
+      ▼
+Delivery DB
+
+
+Tracking Service
+      │
+      ▼
+Tracking DB
+```
+
+O Tracking Service não possui relacionamento JPA com entidades do Delivery Service.
+
+Essa separação ajuda a manter o **baixo acoplamento** entre os microsserviços.
+
+---
+
+# 🛠️ Tecnologias
+
+## Backend
+
+* Java 21
+* Spring Boot 4.1.1
+* Spring Web
+* Spring Data JPA
+* Spring AMQP
+* Spring Mail
+* Jackson
+* PostgreSQL
+* RabbitMQ
+
+## Mensageria
+
+* RabbitMQ
+* CloudAMQP
+
+## Comunicação de e-mail
+
+* Gmail SMTP
+* JavaMailSender
+
+## Ferramentas
+
+* IntelliJ IDEA
+* Maven
+* Git/GitHub
+
+---
+
+# 📁 Estrutura do projeto
+
+```text
+microsservices-java/
+│
+├── delivery_service/
+│   └── src/
+│
+├── tracking_service/
+│   └── src/
+│
+├── email_service/
+│   └── src/
+│
+└── .env
+```
+
+Cada serviço possui seu próprio projeto Spring Boot.
+
+---
+
+# 🔐 Configuração
+
+As credenciais não devem ser versionadas no Git.
+
+Exemplo de variáveis necessárias:
+
+```env
+RABBITMQ_ADDRESS=amqps://...
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=...
+
+MAIL_USERNAME=seuemail@gmail.com
+MAIL_PASSWORD=sua-app-password
+```
+
+A senha utilizada pelo Gmail deve ser uma **App Password**, e não a senha normal da conta Google.
+
+> Nunca coloque credenciais reais no `README.md`, `application.properties` ou GitHub.
+
+---
+
+# ▶️ Executando o projeto
+
+Cada microsserviço deve ser executado separadamente.
+
+### Delivery Service
+
+```bash
+cd delivery_service
+./mvnw spring-boot:run
+```
+
+Porta:
+
+```text
+8081
 ```
 
 ### Tracking Service
 
-Responsável por:
+```bash
+cd tracking_service
+./mvnw spring-boot:run
+```
 
-* Consumir eventos publicados pelo Delivery Service.
-* Receber informações necessárias sobre uma nova entrega.
-* Posteriormente manter o estado de rastreamento da entrega.
+Porta:
 
-O Tracking possui seu próprio domínio e não depende diretamente das entidades JPA do Delivery Service.
+```text
+8082
+```
+
+### Email Service
+
+```bash
+cd email_service
+./mvnw spring-boot:run
+```
+
+Porta:
+
+```text
+8083
+```
 
 ---
 
-## 📨 Comunicação assíncrona
+# 🧪 Testando o fluxo
 
-O evento utilizado na comunicação entre os serviços é o `DeliveryEvent`.
+O fluxo pode ser testado criando uma nova entrega através da API do Delivery Service.
 
-O Delivery Service não envia necessariamente todos os dados da entidade `Entrega`.
-
-Ele cria um evento contendo apenas as informações necessárias para o Tracking:
+Após a criação:
 
 ```text
-DeliveryEvent
-├── codigoPedido
-├── pedido
-├── enderecoDestino
-└── transporte
-```
-
-Fluxo:
-
-```text
-Entrega
-   │
-   ▼
-DeliveryEvent
-   │
-   ▼
-JSON
-   │
-   ▼
+POST Delivery
+      │
+      ▼
+Delivery DB
+      │
+      ▼
 RabbitMQ
-   │
-   ▼
-DeliveryCreatEvent
-   │
-   ▼
+      │
+      ▼
 Tracking Service
-```
-
-Os dois microsserviços possuem suas próprias classes para representar o evento. Eles não compartilham diretamente classes Java.
-
-O que existe entre eles é um **contrato de mensagem**.
-
----
-
-## 🐇 RabbitMQ
-
-O RabbitMQ atua como **Message Broker** entre os microsserviços.
-
-O Delivery Service funciona como **Producer**:
-
-```text
-Delivery Service
       │
-      │ publish
       ▼
-   RabbitMQ
-```
-
-O Tracking Service funciona como **Consumer**:
-
-```text
+Tracking DB
+      │
+      ▼
 RabbitMQ
-   │
-   │ consume
-   ▼
-Tracking Service
-```
-
-A comunicação é assíncrona, portanto o produtor não precisa esperar o consumidor processar a mensagem imediatamente.
-
-### Exemplo
-
-Se o Tracking Service estiver desligado:
-
-```text
-Delivery Service
-      │
-      ├── DeliveryEvent ──► RabbitMQ
-      ├── DeliveryEvent ──► RabbitMQ
-      └── DeliveryEvent ──► RabbitMQ
-                                │
-                                │ mensagens aguardando
-                                ▼
-                         Tracking Service
-                              OFF
-```
-
-Quando o Tracking Service voltar:
-
-```text
-RabbitMQ
-   │
-   ├──► DeliveryEvent
-   ├──► DeliveryEvent
-   └──► DeliveryEvent
-          │
-          ▼
-   Tracking Service
-```
-
----
-
-## 🗄️ Persistência
-
-A ideia da arquitetura é que cada microsserviço seja responsável pelos seus próprios dados.
-
-```text
-Delivery Service             Tracking Service
-      │                            │
-      ▼                            ▼
-Delivery Database           Tracking Database
-```
-
-O Tracking Service **não acessa diretamente o banco do Delivery Service**.
-
-Quando precisar conhecer uma informação do Delivery, ela pode ser recebida através de eventos ou de uma API, dependendo da necessidade.
-
-Essa separação evita um forte acoplamento entre os bancos dos serviços.
-
----
-
-## 🔄 Fluxo atual
-
-Quando uma nova entrega é criada:
-
-```text
-1. Cliente
       │
       ▼
-2. POST /deliveries/save
+Email Service
       │
       ▼
-3. Delivery Service
-      │
-      ├── Salva Entrega
-      │
-      └── Cria DeliveryEvent
-                │
-                ▼
-4. RabbitMQ
-                │
-                ▼
-5. Tracking Service
-                │
-                └── Recebe DeliveryEvent
+Gmail
 ```
+
+O resultado esperado é:
+
+1. Entrega criada.
+2. Evento publicado pelo Delivery Service.
+3. Tracking Service recebe o evento.
+4. Tracking é criado com status `IN_TRANSIT`.
+5. Tracking Service publica o evento de notificação.
+6. Email Service recebe o evento.
+7. JavaMailSender envia o e-mail.
+8. Cliente recebe a notificação.
 
 ---
 
-## 🛠️ Tecnologias
+# 🎯 Objetivos de aprendizado
 
-### Backend
+Este projeto foi desenvolvido para praticar conceitos fundamentais de sistemas distribuídos:
 
-* Java
+* Arquitetura de microsserviços
+* Separação de responsabilidades
+* Comunicação síncrona vs. assíncrona
+* Event-driven architecture
+* Message brokers
+* RabbitMQ
+* Producers e Consumers
+* Spring AMQP
+* JSON serialization/deserialization
+* Isolamento de banco por serviço
+* Comunicação via eventos
+* SMTP
+* JavaMailSender
+* Configuração através de variáveis de ambiente
 * Spring Boot
-* Spring Web
-* Spring Data JPA
-* Spring AMQP
-* Maven
-
-### Mensageria
-
-* RabbitMQ
-* JSON
-* Jackson
-
-### Banco de dados
-
-* PostgreSQL
-
-### Desenvolvimento
-
-* IntelliJ IDEA
-* Postman
-* Git / GitHub
 
 ---
 
-## 📚 Conceitos praticados
+# 📚 Próximos passos
 
-Este projeto foi desenvolvido principalmente para estudar:
+Possíveis evoluções do projeto:
 
-* Microsserviços
-* Comunicação assíncrona
-* Message Broker
-* Producer / Consumer
-* RabbitMQ
-* Eventos
-* Event-driven communication
-* JSON message conversion
-* Desacoplamento entre serviços
-* Separação de domínios
-* Persistência independente por serviço
-* DTOs
-* Eventos de integração
-* Spring AMQP
-* Jackson Message Converter
+* Implementar mais estados de tracking
+* Criar eventos específicos para cada mudança de status
+* Adicionar API para consulta do tracking
+* Implementar tratamento de mensagens com falha
+* Trabalhar com Dead Letter Queues (DLQ)
+* Implementar retry de mensagens
+* Adicionar Docker e Docker Compose
+* Adicionar observabilidade
+* Implementar API Gateway
+* Adicionar service discovery
+* Trabalhar com autenticação entre serviços
+* Implementar testes de integração
+* Evoluir a arquitetura para um ambiente cloud
 
 ---
 
-## 🚀 Próximos passos
+## 📌 Status
 
-O projeto pode evoluir gradualmente para incluir:
+**Projeto funcional.**
 
-* [ ] Persistência do Tracking Service
-* [ ] Status da entrega
-* [ ] Histórico de rastreamento
-* [ ] Endpoint para consulta do tracking
-* [ ] Estados da entrega (`CREATED`, `IN_TRANSIT`, `DELIVERED`, etc.)
-* [ ] Retry de mensagens
-* [ ] Dead Letter Queue (DLQ)
-* [ ] Idempotência dos consumidores
-* [ ] Docker / Docker Compose
-* [ ] Observabilidade
-* [ ] Testes de integração
-* [ ] Segundo consumidor de eventos
-* [ ] Serviço de Analytics em Python
-* [ ] Integração com Kafka para estudo de Event Streaming
+O fluxo principal foi implementado e validado:
 
----
+```text
+Delivery → RabbitMQ → Tracking → RabbitMQ → Email → Gmail
+```
 
-## 🎯 Objetivo do projeto
-
-O objetivo principal não é criar um sistema completo de logística, mas utilizar um domínio simples para estudar, na prática, como microsserviços podem ser estruturados e como podem se comunicar de forma **síncrona ou assíncrona**.
-
-A arquitetura poderá evoluir posteriormente para explorar conceitos mais avançados de **sistemas distribuídos, mensageria, event-driven architecture e processamento de dados**.
+O projeto serve como laboratório prático para estudo de **Java, Spring Boot, Microsserviços, RabbitMQ e Arquitetura Orientada a Eventos**.
