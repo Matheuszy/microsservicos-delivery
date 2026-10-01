@@ -1,3 +1,6 @@
 ### projects config ###
 
 .idea/
+
+## environment files
+.env
