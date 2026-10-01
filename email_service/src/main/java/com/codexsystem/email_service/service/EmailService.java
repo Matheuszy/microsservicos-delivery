@@ -1,18 +1,29 @@
 package com.codexsystem.email_service.service;
 
 import com.codexsystem.email_service.dto.DeliveryTrackingEvent;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
 
+    private final JavaMailSender mailSender;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
     public void sendDeliveryNotification(
             DeliveryTrackingEvent emailReceive
     ) {
 
-        String subject = "Seu pedido está em trânsito";
+        SimpleMailMessage message = new SimpleMailMessage();
 
-        String body = """
+        message.setTo(emailReceive.recipientEmail());
+        message.setSubject("Seu pedido está em trânsito");
+
+        message.setText("""
                 Olá!
 
                 Seu pedido %d está em trânsito.
@@ -21,12 +32,8 @@ public class EmailService {
 
                 Atenciosamente,
                 Codex System
-                """.formatted(
-                emailReceive.codigoPedido()
-        );
+                """.formatted(emailReceive.codigoPedido()));
 
-        System.out.println("Para: " + emailReceive.recipientEmail());
-        System.out.println("Assunto: " + subject);
-        System.out.println("Body: " + body);
+        mailSender.send(message);
     }
 }
