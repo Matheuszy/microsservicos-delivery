@@ -9,6 +9,8 @@ public record EntregaDto(
 
         String pedido,
 
+        String email,
+
         BigDecimal valor,
 
         String tipoProduto,

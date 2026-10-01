@@ -25,6 +25,7 @@ public class DeliveryService {
         Entrega newDelivery = new Entrega(
                 delivery.codigoPedido(),
                 delivery.pedido(),
+                delivery.email(),
                 delivery.valor(),
                 delivery.tipoProduto(),
                 delivery.enderecoDestino(),
