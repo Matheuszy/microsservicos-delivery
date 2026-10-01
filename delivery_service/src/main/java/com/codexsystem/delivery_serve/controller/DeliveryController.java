@@ -30,8 +30,8 @@ public class DeliveryController {
       Entrega newEntrega = service.saveDelivery(delivery);
         DeliveryEvent deliveryEvent = new DeliveryEvent(
                 newEntrega.getCodigoPedido(),
-                newEntrega.getEmail(),
                 newEntrega.getPedido(),
+                newEntrega.getEmail(),
                 newEntrega.getEnderecoDestino(),
                 newEntrega.getTransporte()
         );

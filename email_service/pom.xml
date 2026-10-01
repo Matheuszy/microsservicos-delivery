@@ -52,6 +52,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- jackson -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
