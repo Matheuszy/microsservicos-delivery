@@ -6,6 +6,8 @@ public record DeliveryCreatEvent(
 
         String pedido,
 
+        String email,
+
         String enderecoDestino,
 
         String transporte

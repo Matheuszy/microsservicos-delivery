@@ -20,15 +20,9 @@ public class Entrega {
 
     private String tipoProduto;
 
+    private String email;
+
     private Integer codigoPedido;
-
-    public Integer getCodigoPedido() {
-        return codigoPedido;
-    }
-
-    public void setCodigoPedido(Integer codigoPedido) {
-        this.codigoPedido = codigoPedido;
-    }
 
     @Enumerated(EnumType.STRING)
     private Transporte transporte;
@@ -36,13 +30,22 @@ public class Entrega {
     public Entrega() {
     }
 
-    public Entrega(Integer codigoPedido, String pedido, BigDecimal valor, String tipoProduto, String enderecoDestino, Transporte transporte) {
+    public Entrega(Integer codigoPedido, String pedido, String email, BigDecimal valor, String tipoProduto, String enderecoDestino, Transporte transporte) {
         this.codigoPedido = codigoPedido;
         this.pedido = pedido;
+        this.email = email;
         this.valor = valor;
         this.tipoProduto = tipoProduto;
         this.enderecoDestino = enderecoDestino;
         this.transporte = transporte;
+    }
+
+    public Integer getCodigoPedido() {
+        return codigoPedido;
+    }
+
+    public void setCodigoPedido(Integer codigoPedido) {
+        this.codigoPedido = codigoPedido;
     }
 
     public Transporte getTransporte() {
