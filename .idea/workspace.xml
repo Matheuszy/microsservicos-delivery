@@ -5,43 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4fd6d976-ebe8-417c-a6f6-edc5a0153097" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tracking_service/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/src/main/java/com/codexsystem/tracking/TrackingApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/src/main/java/com/codexsystem/tracking/config/RabbitConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/src/main/java/com/codexsystem/tracking/consumer/TrackingConsumer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/src/main/java/com/codexsystem/tracking/dto/DeliveryCreatEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tracking_service/src/test/java/com/codexsystem/tracking/TrackingApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/.gitattributes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/DeliveryServeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/DeliveryServeApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/config/RabbitConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/controller/DeliveryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/controller/DeliveryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/dto/DeliveryEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/dto/DeliveryEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/dto/EntregaDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/dto/EntregaDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/enums/Transporte.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/enums/Transporte.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/model/Entrega.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/model/Entrega.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/repository/EntregaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/repository/EntregaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/main/java/com/codexsystem/delivery_serve/service/DeliveryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/main/java/com/codexsystem/delivery_serve/service/DeliveryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_serve/src/test/java/com/codexsystem/delivery_serve/DeliveryServeApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_service/src/test/java/com/codexsystem/delivery_serve/DeliveryServeApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/HELP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/src/main/java/com/codexsystem/tracking/TrackingApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/src/main/java/com/codexsystem/tracking/config/RabbitConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/src/main/java/com/codexsystem/tracking/consumer/TrackingConsumer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/src/main/java/com/codexsystem/tracking/dto/DeliveryCreatEvent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tracking/src/test/java/com/codexsystem/tracking/TrackingApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,61 +55,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000024753181405" />
-      <entry key="S2" value="1.042638727761848" />
-      <entry key="S5" value="1.37900661375623" />
-      <entry key="S10" value="1.9170797993643331" />
-      <entry key="S30" value="2.916983419035243" />
-      <entry key="S60" value="3.4111556286426734" />
-      <entry key="M2" value="3.923889557680462" />
-      <entry key="M5" value="5.186158943168084" />
-      <entry key="M10" value="8.571088913100791" />
-      <entry key="M15" value="12.598603244695973" />
-      <entry key="M30" value="23.124761044619728" />
-      <entry key="H1" value="42.02755610959931" />
-      <entry key="H2" value="71.31031977383923" />
-      <entry key="H4" value="100.92337317802733" />
-      <entry key="D1" value="140.6778041350643" />
-      <entry key="W1" value="149.46748268658774" />
+      <entry key="MS100" value="1.0000134911061895" />
+      <entry key="MS500" value="1.1569833816921296" />
+      <entry key="S2" value="2.3118845720198893" />
+      <entry key="S5" value="3.346890427576518" />
+      <entry key="S10" value="4.223092553683822" />
+      <entry key="S30" value="5.584318824555858" />
+      <entry key="S60" value="6.220333691735277" />
+      <entry key="M2" value="6.816378609050515" />
+      <entry key="M5" value="8.131829790681707" />
+      <entry key="M10" value="11.528995477406777" />
+      <entry key="M15" value="15.558714519934652" />
+      <entry key="M30" value="26.089362223493517" />
+      <entry key="H1" value="44.99598141921031" />
+      <entry key="H2" value="74.28378526200696" />
+      <entry key="H4" value="103.90467146913444" />
+      <entry key="D1" value="143.67347119855887" />
+      <entry key="W1" value="152.46682528692003" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="4.541400081149228E-12" />
-      <entry key="MS500" value="0.005388128600886953" />
-      <entry key="S2" value="0.270931491711195" />
-      <entry key="S5" value="0.5931216751569586" />
-      <entry key="S10" value="0.7701439314549967" />
-      <entry key="S30" value="0.9166227566937116" />
-      <entry key="S60" value="0.9575578565434472" />
-      <entry key="M2" value="1.0094663370158166" />
-      <entry key="M5" value="2.093856227788129" />
-      <entry key="M10" value="6.018450378962321" />
-      <entry key="M15" value="10.005614750997191" />
-      <entry key="M30" value="18.823014110427682" />
-      <entry key="H1" value="32.17493814305645" />
-      <entry key="H2" value="51.2468548967979" />
-      <entry key="H4" value="69.94470264852868" />
-      <entry key="D1" value="94.63761629271568" />
-      <entry key="W1" value="100.05642049340247" />
+      <entry key="MS100" value="1.5202896142801617E-23" />
+      <entry key="MS500" value="2.7313997525878055E-5" />
+      <entry key="S2" value="0.07229301149408046" />
+      <entry key="S5" value="0.3496540206846153" />
+      <entry key="S10" value="0.5913155001220715" />
+      <entry key="S30" value="0.8393435492380742" />
+      <entry key="S60" value="0.9163040051331667" />
+      <entry key="M2" value="0.9874818487224435" />
+      <entry key="M5" value="2.0754953763701316" />
+      <entry key="M10" value="5.9920046303195456" />
+      <entry key="M15" value="9.976282711439922" />
+      <entry key="M30" value="18.795403481622596" />
+      <entry key="H1" value="32.151331501596516" />
+      <entry key="H2" value="51.22805162659625" />
+      <entry key="H4" value="69.93186957019917" />
+      <entry key="D1" value="94.63472213787523" />
+      <entry key="W1" value="100.05598336343176" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="6.103515626655189E-5" />
-      <entry key="MS500" value="0.14534264791501553" />
-      <entry key="S2" value="0.8609120801999138" />
-      <entry key="S5" value="1.7043863546974158" />
-      <entry key="S10" value="2.4995682120112974" />
-      <entry key="S30" value="3.73741253854324" />
-      <entry key="S60" value="4.3128091649271125" />
-      <entry key="M2" value="4.9025367352713705" />
-      <entry key="M5" value="7.260039610390498" />
-      <entry key="M10" value="14.565086202430281" />
-      <entry key="M15" value="22.57718741067131" />
-      <entry key="M30" value="41.921461762056346" />
-      <entry key="H1" value="74.1796946455332" />
-      <entry key="H2" value="122.53911874774278" />
-      <entry key="H4" value="170.8558324777095" />
-      <entry key="D1" value="235.3126768729711" />
-      <entry key="W1" value="249.52348926414226" />
+      <entry key="MS100" value="0.9395351432053412" />
+      <entry key="MS500" value="1.0977929277630907" />
+      <entry key="S2" value="2.0618438376038872" />
+      <entry key="S5" value="3.390774202203519" />
+      <entry key="S10" value="4.579506096090092" />
+      <entry key="S30" value="6.300839221286441" />
+      <entry key="S60" value="7.065162533922186" />
+      <entry key="M2" value="7.764566309096661" />
+      <entry key="M5" value="10.18382819781974" />
+      <entry key="M10" value="17.49479978585968" />
+      <entry key="M15" value="25.506808008903224" />
+      <entry key="M30" value="44.857871257318116" />
+      <entry key="H1" value="77.1242200368654" />
+      <entry key="H2" value="125.49363254367125" />
+      <entry key="H4" value="173.82422240215206" />
+      <entry key="D1" value="238.3054369415304" />
+      <entry key="W1" value="252.52239288998894" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -154,6 +123,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -163,12 +133,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.DeliveryServeApplication (1).executor": "Run",
     "Spring Boot.DeliveryServeApplication.executor": "Run",
     "Spring Boot.TrackingApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feat/implementa-microservice-email",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Pichau/Desktop/MATHEUS/projetos em java/microsservices-java",
@@ -326,7 +297,7 @@
       <updated>1790774627583</updated>
       <workItem from="1790774628633" duration="10652000" />
       <workItem from="1790791457932" duration="2060000" />
-      <workItem from="1790854295449" duration="2721000" />
+      <workItem from="1790854295449" duration="3043000" />
     </task>
     <servers />
   </component>
