@@ -1,5 +1,6 @@
 package com.codexsystem.delivery_serve.model;
 
+import com.codexsystem.delivery_serve.enums.Status;
 import com.codexsystem.delivery_serve.enums.Transporte;
 import jakarta.persistence.*;
 
@@ -27,6 +28,9 @@ public class Entrega {
     @Enumerated(EnumType.STRING)
     private Transporte transporte;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     public Entrega() {
     }
 
@@ -38,6 +42,15 @@ public class Entrega {
         this.tipoProduto = tipoProduto;
         this.enderecoDestino = enderecoDestino;
         this.transporte = transporte;
+        this.status = Status.CREATED;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Integer getCodigoPedido() {
