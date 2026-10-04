@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido em trânsito</title>
+</head>
+
+<body>
+
+<h2>Olá!</h2>
+
+<p>
+    Seu pedido
+    <strong th:text="${codigoPedido}"></strong>
+    está em trânsito.
+</p>
+
+<p>
+    Em breve ele chegará ao endereço informado.
+</p>
+
+<p>
+    <strong>Status:</strong>
+    <span th:text="${status}"></span>
+</p>
+
+<p>
+    Atenciosamente,<br>
+    Codex System
+</p>
+
+</body>
+</html>
+
