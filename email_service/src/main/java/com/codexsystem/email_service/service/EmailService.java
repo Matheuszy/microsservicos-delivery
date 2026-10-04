@@ -1,39 +1,69 @@
 package com.codexsystem.email_service.service;
 
 import com.codexsystem.email_service.dto.DeliveryTrackingEvent;
-import org.springframework.mail.SimpleMailMessage;
+import com.codexsystem.email_service.exception.EmailSendingException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final SpringTemplateEngine templateEngine;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(
+            JavaMailSender mailSender,
+            SpringTemplateEngine templateEngine
+    ) {
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
     public void sendDeliveryNotification(
-            DeliveryTrackingEvent emailReceive
+            DeliveryTrackingEvent event
     ) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        try {
 
-        message.setTo(emailReceive.recipientEmail());
-        message.setSubject("Seu pedido está em trânsito");
+            Context context = new Context();
 
-        message.setText("""
-                Olá!
+            context.setVariable("codigoPedido", event.codigoPedido());
+            context.setVariable("status", event.status());
 
-                Seu pedido %d está em trânsito.
+            String htmlContent =
+                    templateEngine.process(
+                            "delivery-in-transit",
+                            context
+                    );
 
-                Em breve ele chegará ao endereço informado.
+            MimeMessage message =
+                    mailSender.createMimeMessage();
 
-                Atenciosamente,
-                Codex System
-                """.formatted(emailReceive.codigoPedido()));
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(
+                            message,
+                            true,
+                            "UTF-8"
+                    );
 
-        mailSender.send(message);
+            helper.setTo(event.recipientEmail());
+            helper.setSubject("Seu pedido está em trânsito");
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+
+            throw new EmailSendingException(
+                    "Erro ao enviar e-mail para "
+                            + event.recipientEmail(),
+                    e
+            );
+        }
     }
 }
